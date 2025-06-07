@@ -12,9 +12,18 @@ public class PlayerService {
         this.repository = repository;
     }
 
-    public void create(String nickname) {
+    public Player create(String nickname) {
         Player p = new Player();
         p.setNickname(nickname);
-        repository.save(p);
+        return repository.save(p);
+    }
+
+    public boolean existsByNickname(String nickname) {
+        return repository.findByNickname(nickname).isPresent();
+    }
+
+    public Player findByNickname(String nickname) {
+        return repository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("Nickname " + nickname + " já existe."));
     }
 }

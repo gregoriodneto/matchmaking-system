@@ -1,5 +1,7 @@
 package com.greg.matchmaking_service.controller;
 
+import com.greg.matchmaking_service.application.PlayerApplicationService;
+import com.greg.matchmaking_service.domain.entity.Player;
 import com.greg.matchmaking_service.domain.repository.PlayerRepository;
 import com.greg.matchmaking_service.domain.service.PlayerService;
 import com.greg.matchmaking_service.dto.PlayerDto;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/player")
 public class PlayerController {
-    @Autowired private PlayerService service;
+    @Autowired private PlayerApplicationService service;
 
     @PostMapping
     @Operation(
@@ -23,7 +25,11 @@ public class PlayerController {
             description = "Cadastro de jogador"
     )
     public ResponseEntity<?> create(@RequestBody PlayerDto dto) {
-        service.create(dto.getNickname());
-        return ResponseEntity.status(HttpStatus.CREATED).body("Jogador criado com sucesso!");
+        try {
+            Player player = service.create(dto.getNickname());
+            return ResponseEntity.status(HttpStatus.CREATED).body("Jogador criado com sucesso: " + player.getNickname());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

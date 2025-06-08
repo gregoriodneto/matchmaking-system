@@ -19,4 +19,7 @@ public class MatchRequest extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "player_id")
     )
     private List<Player> players;
+
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status = MatchStatus.WAITING;
 }

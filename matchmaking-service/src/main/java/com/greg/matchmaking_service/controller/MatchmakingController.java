@@ -33,4 +33,20 @@ public class MatchmakingController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PostMapping("finish/{matchId}")
+    @Operation(
+            summary = "Finalizando partida",
+            description = "Finaliza a partida entre dois jogadores."
+    )
+    public ResponseEntity<?> finish(
+            @PathVariable Long matchId
+    ) {
+        try {
+            service.finishMatch(matchId);
+            return ResponseEntity.status(HttpStatus.OK).body("Partida finalizada com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

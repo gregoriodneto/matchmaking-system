@@ -6,6 +6,7 @@ import com.greg.matchmaking_service.domain.entity.enums.MatchStatus;
 import com.greg.matchmaking_service.domain.entity.enums.PlayerStatus;
 import com.greg.matchmaking_service.domain.repository.MatchRequestRepository;
 import com.greg.matchmaking_service.domain.repository.PlayerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class MatchRequestService {
         this.matchService = matchService;
     }
 
+    @Transactional
     public MatchRequest join(Player player) {
         MatchRequest openRequest = repository.findFirstByStatusAndPlayersCountLessThan(
                 MatchStatus.WAITING, 2

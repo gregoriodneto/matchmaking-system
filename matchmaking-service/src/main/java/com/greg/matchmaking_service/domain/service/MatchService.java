@@ -11,6 +11,9 @@ import com.greg.matchmaking_service.domain.repository.MatchRequestRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class MatchService {
     private MatchRepository repository;
@@ -57,5 +60,35 @@ public class MatchService {
             match.getStatus().toString()
         );
         matchPublisherService.sendMatchCreatedEvent(dto);
+    }
+
+    public void finishMatch(Match match) {
+        setStatus(match, MatchStatus.FINISHED);
+
+        Player player1 = match.getPlayer1();
+        playerService.setStatus(player1, PlayerStatus.FINISHED);
+        Player player2 = match.getPlayer2();
+        playerService.setStatus(player2, PlayerStatus.FINISHED);
+
+        MatchCreatedEventDTO dto = new MatchCreatedEventDTO(
+                match.getId(),
+                player1.getId(),
+                player2.getId(),
+                match.getStatus().toString()
+        );
+        matchPublisherService.sendMatchCreatedEvent(dto);
+    }
+
+    public void setStatus(Match match, MatchStatus status) {
+        match.setStatus(status);
+        repository.save(match);
+    }
+
+    public Optional<Match> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public List<Match> findAllMatchs() {
+        return repository.findAll();
     }
 }

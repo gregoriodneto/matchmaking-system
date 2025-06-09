@@ -3,7 +3,9 @@ package com.greg.matchmaking_service.domain.service;
 import com.greg.matchmaking_service.domain.entity.MatchRequest;
 import com.greg.matchmaking_service.domain.entity.Player;
 import com.greg.matchmaking_service.domain.entity.enums.MatchStatus;
+import com.greg.matchmaking_service.domain.entity.enums.PlayerStatus;
 import com.greg.matchmaking_service.domain.repository.MatchRequestRepository;
+import com.greg.matchmaking_service.domain.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,9 +14,17 @@ import java.util.List;
 @Service
 public class MatchRequestService {
     private MatchRequestRepository repository;
+    private MatchService matchService;
+    private PlayerService playerService;
 
-    public MatchRequestService(MatchRequestRepository repository) {
+    public MatchRequestService(
+            MatchRequestRepository repository,
+            MatchService matchService,
+            PlayerService playerService
+    ) {
         this.repository = repository;
+        this.playerService = playerService;
+        this.matchService = matchService;
     }
 
     public MatchRequest join(Player player) {
@@ -22,9 +32,17 @@ public class MatchRequestService {
                 MatchStatus.WAITING, 2
         );
 
+        playerService.setStatus(player, PlayerStatus.WAITING);
+
         if (openRequest != null) {
             openRequest.getPlayers().add(player);
-            return repository.save(openRequest);
+            MatchRequest updatedResquest = repository.save(openRequest);
+
+            if (updatedResquest.getPlayers().size() == 2) {
+                matchService.createMatchFromRequest(updatedResquest);
+            }
+
+            return updatedResquest;
         }
 
         MatchRequest newRequest = new MatchRequest();

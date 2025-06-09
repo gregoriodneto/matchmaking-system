@@ -1,6 +1,7 @@
 package com.greg.matchmaking_service.domain.service;
 
 import com.greg.matchmaking_service.domain.entity.Player;
+import com.greg.matchmaking_service.domain.entity.enums.PlayerStatus;
 import com.greg.matchmaking_service.domain.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,10 @@ public class PlayerService {
     public Player findByNickname(String nickname) {
         return repository.findByNickname(nickname)
                 .orElseThrow(() -> new RuntimeException("Nickname " + nickname + " já existe."));
+    }
+
+    public void setStatus(Player player, PlayerStatus status) {
+        player.setStatus(status);
+        repository.save(player);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MatchRequestRepository extends JpaRepository<MatchRequest, Long> {
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    //@Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT mr FROM MatchRequest mr WHERE mr.status = :status AND SIZE(mr.players) < :maxPlayers")
     MatchRequest findFirstByStatusAndPlayersCountLessThan(
             @Param("status") MatchStatus status,

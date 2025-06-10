@@ -14,7 +14,7 @@ Serviço responsável por receber solicitações de pareamento de jogadores, ger
 
 ### 📊 Stats Service (stats-service)
 Serviço responsável por simular estatísticas de jogadores com base nos eventos recebidos.
-- Tecnologia: Python + FastAPI
+- Tecnologia: Java + Spring Boot
 - Responsabilidades:
     - Receber eventos de partidas finalizadas via RabbitMQ
     - Atualizar dados simulados no Redis
